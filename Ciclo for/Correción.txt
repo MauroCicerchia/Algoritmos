@@ -1,0 +1,1 @@
+Ni el for, ni el if tienen llaves. Por lo tanto, se repetirá 5 veces el if y sólo se imprimirá 1 vez la palabra algoritmos.
