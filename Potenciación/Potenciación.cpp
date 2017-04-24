@@ -15,11 +15,13 @@ int main()
 {
 	int num, exp;
 	
+	cout << "Ingrese el numero: ";
 	cin >> num;
 	
+	cout << "Ingrese el exponente: ";
 	cin >> exp;
 	
 	long int resultado = potencia(num, exp);
 	
-	cout << resultado;
+	cout << "El resultado es: " << resultado;
 }
