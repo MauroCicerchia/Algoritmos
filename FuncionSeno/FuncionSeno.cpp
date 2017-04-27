@@ -10,6 +10,7 @@ int main()
 {
 	float x;
 	
+	cout << "Ingrese el angulo (en radianes) para calcular su seno: ";
 	cin >> x;
 	
 	cout << sen(x);
