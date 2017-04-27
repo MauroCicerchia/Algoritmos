@@ -2,13 +2,15 @@
 #include <math.h>
 using namespace std;
 
-const float pi = 3.141592654;
+const float pi = 3.1415;
 
 float sen(float);
 
 int main()
 {
-	float x = (pi/3);
+	float x;
+	
+	cin >> x;
 	
 	cout << sen(x);
 }
@@ -42,5 +44,6 @@ float sen(float ang)
 	//Angulo encuadrado entre pi/2 y -pi/2
 	result = ang - (pow(ang, 3)/6 ) + (pow(ang, 5)/120);
 	
+	//Resultado aproximado, no exacto
 	return result;
 }
