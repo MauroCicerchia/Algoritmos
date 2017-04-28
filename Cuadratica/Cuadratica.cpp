@@ -2,12 +2,11 @@
 #include <math.h>
 using namespace std;
 
-bool determinarRaices(int, int, int, float&, float&);
+bool determinarRaices(float, float, float, float&, float&);
 
 int main()
 {
-	int a, b, c;
-	float x1, x2;
+	float a, b, c, x1, x2;
 	
 	cout << "Ingrese el coeficiente a: ";
 	cin >> a;
@@ -31,7 +30,7 @@ int main()
 	}
 }
 
-bool determinarRaices(int a, int b, int c, float &x1, float &x2)
+bool determinarRaices(float a, float b, float c, float &x1, float &x2)
 {
 	if((pow(b, 2) - 4*a*c) == 0)
 	{
