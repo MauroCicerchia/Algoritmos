@@ -7,7 +7,8 @@ bool esOperando(char);
 bool esOperador(char);
 void sacarEspacios(string&);
 bool esCorrecta(string);
-int resultado(string);
+void calcularTerminos(string&);
+float resultado(string);
 
 int main()
 {
@@ -20,6 +21,7 @@ int main()
 	{
 		/*system("cls");
 		cout << cadena <<  "=" << resultado(cadena) << endl;*/
+		calcularTerminos(cadena);
 		return 1;
 	} else { 
 		return 0;
@@ -108,8 +110,35 @@ bool esCorrecta(string cadena)
 	return true;
 }
 
-//Calcula el resultado de la operación
-int resultado(string cadena)
+void calcularTerminos(string &cadena)
 {
-	return 5;
+	//"1+2*3+4/2+5"
+	string terminos[9], aux1 = NULL, aux2 = NULL;
+	int n;
+	
+	for(int i = 0, n = 0; i < 17; i++)			//Recorre todos los caracteres posibles de la cadena.
+	{
+		if(cadena.at(i) != '+' && cadena.at(i) != '-')	//Si el caracter actual no es un separador de terminos, lo agrega a una cadena auxiliar.
+		{
+			aux1 += cadena.at(i);
+		}
+		if(cadena.at(i+1) == '+' || cadena.at(i) == '-')
+		{
+			terminos[n] = aux1;
+			n++;
+			aux1.erase(0,aux1.length());
+		}
+	}
+	for(int i = 0; i < n; i++)
+	{
+		cout << terminos[n] << endl;
+	}
+}
+
+//Calcula el resultado de la operación
+float resultado(string cadena)
+{
+	float result = 0;
+	
+	return result;
 }
