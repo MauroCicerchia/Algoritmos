@@ -9,6 +9,7 @@ void sacarEspacios(string&);
 bool esCorrecta(string);
 void calcularTerminos(string&);
 float resultado(string);
+int operar(int, string, string);
 
 int main()
 {
@@ -110,32 +111,90 @@ bool esCorrecta(string cadena)
 	return true;
 }
 
+//Funcion que calcula los terminos de la cadena
 void calcularTerminos(string &cadena)
 {
-	//"1+2*3+4/2+5"
-	string terminos[9], aux1 = NULL, aux2 = NULL;
-	int n;
+
+	string terminos[9], operaciones[8], aux1;
+	int n = 0;
 	
-	for(int i = 0, n = 0; i < 17; i++)			//Recorre todos los caracteres posibles de la cadena.
+	for(int i = 0; i < cadena.length(); i++)			//Recorre todos los caracteres de la cadena.
 	{
 		if(cadena.at(i) != '+' && cadena.at(i) != '-')	//Si el caracter actual no es un separador de terminos, lo agrega a una cadena auxiliar.
 		{
 			aux1 += cadena.at(i);
 		}
-		if(cadena.at(i+1) == '+' || cadena.at(i) == '-')
+		if(i != cadena.length() - 1)	//Si el caracter actual no es el ultimo...
 		{
-			terminos[n] = aux1;
+			if(cadena.at(i+1) == '+' || cadena.at(i+1) == '-')	//Si el caracter siguiente es un separador de terminos...
+			{
+				terminos[n] = aux1;								//...agrega la cadena auxiliar al vector de terminos y agrega el separador de terminos al vector de operadores.
+				operaciones[n] = cadena.at(i+1);
+				n++;
+				aux1.clear();
+			}
+		} else {									//Si es el ultimo...
+			terminos[n] = aux1;						//...agrega la cadena auxiliar al vector de terminos
 			n++;
-			aux1.erase(0,aux1.length());
+			aux1.clear();
 		}
 	}
+	
+	//Ahora todos los terminos estan separados.
+	
+	//3/5*6
 	for(int i = 0; i < n; i++)
 	{
-		cout << terminos[n] << endl;
+		//cout << terminos[i] << endl;
+		//TODO resolver terminos
+		//aux1, operacao, aux2, resuelvo, recursivo.
+		bool primero = true;
+		int total = 0;
+		string aux;
+		string operacion;
+		
+		for(int j = 0; j < terminos[n].length(); j++)
+		{
+			if(terminos[n].at(i) != '*' && terminos[n].at(i) != '/')	//Si el caracter actual es un numero
+			{
+
+					aux += terminos[n].at(i);
+				
+			} else {													//Si es un * o /
+				
+				if(primero)
+				{
+					total += stoi(aux);	//Guarda el valor numerico de aux
+					primero = false;
+				} else {
+					total = operar(total, operacion, aux);
+				}
+					
+				operacion = terminos[n].at(i);
+				
+			}
+		}
+		
+		terminos[n] = itos(total);
 	}
+	
+	for(int i = 0; i < operaciones.length(); i++)
+		cout << terminos[i] << operaciones[i];
+	cout << terminos[terminos.length()-1];
 }
 
-//Calcula el resultado de la operación
+//Realiza las multiplicaciones y divisiones
+int operar(int total, string operacion, string aux)
+{
+	if(operacion == "*")
+		total *= aux;
+	else
+		total /= aux;
+	
+	return total;
+}
+
+//Calcula el resultado de los terminos
 float resultado(string cadena)
 {
 	float result = 0;
