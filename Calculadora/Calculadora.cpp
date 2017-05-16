@@ -1,32 +1,35 @@
 #include <iostream>
 #include <string>
 #include <windows.h>
+#include <math.h>
 using namespace std;
 
 bool esOperando(char);
 bool esOperador(char);
+int stoi(string);
 void sacarEspacios(string&);
 bool esCorrecta(string);
-void calcularTerminos(string&);
-float resultado(string);
-int operar(int, string, string);
+int separarTerminos(string, string[], string[]);
+int calcularTerminos(string[], string[], int[], string[], int&);
+int operar(string);
 
 int main()
 {
 	string cadena;
+	int n;
 	
 	getline(cin, cadena);
 	sacarEspacios(cadena);
 	
 	if(esCorrecta(cadena))
 	{
-		/*system("cls");
-		cout << cadena <<  "=" << resultado(cadena) << endl;*/
-		calcularTerminos(cadena);
+		system("cls");
+		cout << cadena << "=" << operar(cadena) << endl;
 		return 1;
 	} else { 
 		return 0;
 	}
+	
 }
 
 //Funcion que devuelve true si el caracter es un numero.
@@ -46,6 +49,12 @@ bool esOperador(char caracter)
 		return true;
 	else
 		return false;
+}
+
+//Convierte una cadena de caracteres numericos a int.
+int stoi(string s)
+{
+	return atoi(&s.at(0));;
 }
 
 //Funcion para eliminar los espacios de la cadena.
@@ -111,93 +120,67 @@ bool esCorrecta(string cadena)
 	return true;
 }
 
-//Funcion que calcula los terminos de la cadena
-void calcularTerminos(string &cadena)
-{
-
-	string terminos[9], operaciones[8], aux1;
+//Separa la cadena en dos vectores, uno para operadores y otro para operaciones. Devuelve la cantidad de terminos.
+int separarTerminos(string cadena, string operandos[], string operaciones[])
+{	
 	int n = 0;
-	
-	for(int i = 0; i < cadena.length(); i++)			//Recorre todos los caracteres de la cadena.
+
+	for(int i = 0; i < cadena.length(); i++)			//Recorre toda la cadena.
 	{
-		if(cadena.at(i) != '+' && cadena.at(i) != '-')	//Si el caracter actual no es un separador de terminos, lo agrega a una cadena auxiliar.
+		if(isdigit(cadena.at(i)))						//Si es un numero...
 		{
-			aux1 += cadena.at(i);
-		}
-		if(i != cadena.length() - 1)	//Si el caracter actual no es el ultimo...
-		{
-			if(cadena.at(i+1) == '+' || cadena.at(i+1) == '-')	//Si el caracter siguiente es un separador de terminos...
-			{
-				terminos[n] = aux1;								//...agrega la cadena auxiliar al vector de terminos y agrega el separador de terminos al vector de operadores.
-				operaciones[n] = cadena.at(i+1);
-				n++;
-				aux1.clear();
-			}
-		} else {									//Si es el ultimo...
-			terminos[n] = aux1;						//...agrega la cadena auxiliar al vector de terminos
+			operandos[n] += cadena.at(i);				//Lo guarda en el vector de operandos.
+		} else {
+			operaciones[n] = cadena.at(i);				//Si no, lo guarda en el vector de operaciones.
 			n++;
-			aux1.clear();
 		}
 	}
 	
-	//Ahora todos los terminos estan separados.
+	return n;
+}
+
+//Resuelve multiplicaciones y divisiones. Luego sumas y restas.
+int calcularTerminos(string operandos[], string operaciones[], int nOperandos[], string nOperaciones[], int &n)
+{
+	int o = 0, result = 0;
 	
-	//3/5*6
-	for(int i = 0; i < n; i++)
+	nOperandos[0] = stoi(operandos[0]);									//Guarda el primer caracter en el vector de operandos numericos
+	for(int i = 0; i < n; i++)											//Recorre ambos vectores
 	{
-		//cout << terminos[i] << endl;
-		//TODO resolver terminos
-		//aux1, operacao, aux2, resuelvo, recursivo.
-		bool primero = true;
-		int total = 0;
-		string aux;
-		string operacion;
-		
-		for(int j = 0; j < terminos[n].length(); j++)
+		if(operaciones[i] == "+" || operaciones[i] == "-")				//Si la operacion actual es una suma o una resta...
 		{
-			if(terminos[n].at(i) != '*' && terminos[n].at(i) != '/')	//Si el caracter actual es un numero
-			{
-
-					aux += terminos[n].at(i);
-				
-			} else {													//Si es un * o /
-				
-				if(primero)
-				{
-					total += stoi(aux);	//Guarda el valor numerico de aux
-					primero = false;
-				} else {
-					total = operar(total, operacion, aux);
-				}
-					
-				operacion = terminos[n].at(i);
-				
-			}
+			nOperaciones[o] = operaciones[i];							//...guarda la operacion y el caracter siguiente en los vectores correspondientes.
+			o++;
+			nOperandos[o] = stoi(operandos[i+1]);									
+			
+		} else if(operaciones[i] == "*") {								//Si es una multiplicacion o division realiza la operacion y guarda el resultado en el vector de numeros.
+			nOperandos[o] = nOperandos[o] * stoi(operandos[i+1]);					
+		} else if(operaciones[i] == "/") {
+			nOperandos[o] = nOperandos[o] / stoi(operandos[i+1]);
 		}
-		
-		terminos[n] = itos(total);
 	}
-	
-	for(int i = 0; i < operaciones.length(); i++)
-		cout << terminos[i] << operaciones[i];
-	cout << terminos[terminos.length()-1];
-}
 
-//Realiza las multiplicaciones y divisiones
-int operar(int total, string operacion, string aux)
-{
-	if(operacion == "*")
-		total *= aux;
-	else
-		total /= aux;
-	
-	return total;
-}
-
-//Calcula el resultado de los terminos
-float resultado(string cadena)
-{
-	float result = 0;
+	result += nOperandos[0];											//Suma el primer numero al resultado
+	for(int i = 0; i < o; i++)											//Recorre ambos vectores
+	{
+		if(nOperaciones[i] == "+")										//Realiza la suma o resta y suma el resultado a la variable.
+			result += nOperandos[i+1];
+		else if(nOperaciones[i] == "-")
+			result -= nOperandos[i+1];
+	}
 	
 	return result;
 }
+
+//Calcula el resultado.
+int operar(string cadena)
+{
+	string operandos[9], operaciones[8], nOperaciones[8], aux1;
+	int nOperandos[9], n, result;
+
+	n = separarTerminos(cadena, operandos, operaciones);
+	
+	return calcularTerminos(operandos, operaciones, nOperandos, nOperaciones, n);
+
+}
+
