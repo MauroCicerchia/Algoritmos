@@ -4,7 +4,10 @@ using namespace std;
 double sqrt(double);
 
 int main() {
+	double n;
 	
+	cin >> n;
+	cout << "Raiz cuadrada de " << n << " = " << sqrt(n);
 }
 
 double sqrt(double x) {
