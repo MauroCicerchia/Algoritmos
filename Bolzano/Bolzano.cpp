@@ -6,8 +6,11 @@ double sqrt(double);
 int main() {
 	double n;
 	
+	do{
 	cin >> n;
-	cout << "Raiz cuadrada de " << n << " = " << sqrt(n);
+	if(n>0)
+		cout << "Raiz cuadrada de " << n << " = " << sqrt(n) << endl;
+	} while(n>0);
 }
 
 double sqrt(double x) {
